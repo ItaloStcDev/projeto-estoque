@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+    
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        div {
+            display: grid;
+            justify-content: center;
+            
+
+            padding: 10px;
+            border: 1px;
+            border-radius: 5px;
+            border-style: solid;
+            
+            margin: auto;
+            margin-bottom: 3dvh;
+            box-shadow: 3px 3px 3px;
+            
+            width: 50dvw;
+        }
+        .produtos {
+            padding: auto;
+            width: auto;
+        }
+        input {
+            border-radius: 5px;
+            border-style: solid;
+        }
+        button {
+            font-weight: bold;
+            color: white;
+
+            border-radius: 5px;
+            border-style: solid;
+            border-color: transparent;
+
+            background-color: blueviolet;
+        }
+        .delete {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="div1">
+        <input type="text" placeholder="nome" id="nomeInput"> <br>
+        <input type="number" placeholder="valor" id="valorInput"> <br>
+        <input type="text" placeholder="quantidade" id="quantidadeInput"> <br>
+        <button id="setBtn">add</button>
+    </div>
+    <div id="estoqueDiv">
+        <p>estoque:</p>
+        <div id="estoqueTotal"></div>
+    </div>
+
+
+    <script>
+        const div1 = document.querySelector("#div1");
+        const estoqueDiv = document.querySelector('#estoqueDiv');
+        let estoqueTotal = document.querySelector('#estoqueTotal');
+        estoqueTotal.style.display = 'none';
+
+        const setBtn = document.querySelector('#setBtn');
+        setBtn.addEventListener('click', setNewProd);
+
+        const estoque = [];
+
+        const observer = new MutationObserver(() => {
+            estoqueTotal.innerText = `total: ${estoque.length}`;
+            estoqueTotal.style.display=='none'?estoqueTotal.style.display='flex':'';
+        })
+
+        observer.observe(estoqueDiv, { childList: true });
+
+        class Prod {
+            constructor(nome, valor, quantidade) {
+                this.nome = nome;
+                this.valor = valor;
+                this.quantidade = quantidade;
+            }
+            setIt(container) {
+                const prodDiv = document.createElement('div');
+                prodDiv.setAttribute('class', 'produtos');
+                prodDiv.innerText = `${this.nome} - valor: R$${this.valor} - Quantidade: ${this.quantidade}`
+                container.appendChild(prodDiv);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerText = 'X';
+                deleteBtn.setAttribute('class', 'delete')
+                deleteBtn.addEventListener('click', () => {
+                    estoque.splice(estoque.indexOf(this), 1);
+                    prodDiv.remove();
+                })
+                prodDiv.appendChild(deleteBtn);
+            }
+        }
+
+        function setNewProd() {
+            const nome = document.querySelector('#nomeInput').value;
+            const valor = document.querySelector('#valorInput').value;
+            const quantidade = document.querySelector('#quantidadeInput').value;
+
+            const novoProd = new Prod(nome, Number(valor), Number(quantidade));
+
+            estoque.push(novoProd);
+            novoProd.setIt(estoqueDiv);
+        }
+
+    </script>
+</body>
+</html>
