@@ -1,62 +1,66 @@
-import { estoque} from "./script.js";
+import { deleteFromStock } from "./script.js";
 
 export class Prod {
-    constructor(nome, valor, quantidade) {
-        this.nome = nome;
-        this.valor = valor;
-        this.quantidade = quantidade;
+    constructor(name, value, quantity) {
+        this.name = name;
+        this.value = value;
+        this.quantity = quantity;
     }
-    setIt(container) {
-        const prodDiv = document.createElement('div');
-        prodDiv.className = 'produtos';
-        // prodDiv.innerText = `Nome: ${this.nome} - Valor: R$${this.valor} - Quantidade: ${this.quantidade}`
-        container.appendChild(prodDiv);
+    setIt(container, updatefunc, deleteFunc) {
+        this.prodDiv = document.createElement('div');
+        this.prodDiv.className = 'produtos';
+        // prodDiv.innerText = `Name: ${this.name} - value: R$${this.value} - quantity: ${this.quantity}`
+        container.appendChild(this.prodDiv);
 
         const prodName = document.createElement('div');
-        prodName.innerText = 'name: ' + this.nome;
-        prodDiv.appendChild(prodName);
+        prodName.innerText = 'name: ' + this.name;
+        this.prodDiv.appendChild(prodName);
 
         const prodValue = document.createElement('div');
-        prodValue.innerText = `valor: R$`;
+        prodValue.innerText = `value: R$`;
         const valueSpam = document.createElement('div');
-        valueSpam.innerText = this.valor;
-        prodDiv.appendChild(prodValue);
+        valueSpam.innerText = this.value;
+        this.prodDiv.appendChild(prodValue);
         prodValue.appendChild(valueSpam);
         
 
         const valuePlus = document.createElement('button')
         valuePlus.innerText = '+';
         valuePlus.addEventListener('click', ()=>{
-            this.valor++;
-            return valueSpam.innerText = this.valor;}
-        )
+            this.value++;
+            valueSpam.innerText = this.value;
+            updatefunc();
+        })
         const valueMinus = document.createElement('button');
         valueMinus.innerText = '-';
         valueMinus.addEventListener('click', ()=>{
-            this.valor>=1?this.valor--:this.valor;
-            return valueSpam.innerText = this.valor;
+            this.value>=1?this.value--:this.value;
+            valueSpam.innerText = this.value;
+            updatefunc();
         })
         prodValue.appendChild(valueMinus);
         prodValue.appendChild(valuePlus);
 
         const prodQuant = document.createElement('div');
-        prodQuant.innerText = `quantidade: `;
+        prodQuant.innerText = `quantity: `;
         const quantSpam = document.createElement('div');
-        quantSpam.innerText = this.quantidade;
-        prodDiv.appendChild(prodQuant);
+        quantSpam.innerText = this.quantity;
+        this.prodDiv.appendChild(prodQuant);
         prodQuant.appendChild(quantSpam);
 
         const quantPlus = document.createElement('button')
         quantPlus.innerText = '+';
         quantPlus.addEventListener('click', ()=>{
-            this.quantidade++;
-            return quantSpam.innerText = this.quantidade;}
-        )
+            this.quantity++;
+            quantSpam.innerText = this.quantity;
+        updatefunc();
+        })
         const quantMinus = document.createElement('button');
         quantMinus.innerText = '-';
         quantMinus.addEventListener('click', ()=>{
-            this.quantidade>=1?this.quantidade--:this.quantidade;
-            return quantSpam.innerText = this.quantidade;
+            this.quantity>=1?this.quantity--:this.quantity;
+            quantSpam.innerText = this.quantity;
+            updatefunc();
         })
         prodQuant.appendChild(quantMinus);
         prodQuant.appendChild(quantPlus);
@@ -64,7 +68,7 @@ export class Prod {
         // const editBtn = document.createElement('button');
         // editBtn.setAttribute('class', 'edit');
         // editBtn.innerText = 'edit';
-        // prodDiv.appendChild(editBtn);
+        // this.prodDiv.appendChild(editBtn);
 
         // editBtn.addEventListener('click', ()=>{
         //     const valueEdit = document.createElement('input');
@@ -72,13 +76,13 @@ export class Prod {
         //     const valueSend = document.createElement('button');
         //     valueSend.innerText = 'send';
 
-        //     valueSend.addEventListener('click', () => {this.valor = Number(valueEdit.value.trim())>=0?Number(valueEdit.value.trim()):this.valor; valueSpam.innerText = this.valor; valueEdit.remove(); valueSend.remove()});
+        //     valueSend.addEventListener('click', () => {this.value = Number(valueEdit.value.trim())>=0?Number(valueEdit.value.trim()):this.value; valueSpam.innerText = this.value; valueEdit.remove(); valueSend.remove()});
 
         //     const quantEdit = document.createElement('input');
         //     quantEdit.setAttribute('type', 'number');
         //     const quantSend = document.createElement('button'); quantSend.innerText = 'send';
             
-        //     quantSend.addEventListener('click', () => {this.quantidade = Number(quantEdit.value.trim())>=0?Number(quantEdit.value.trim()):this.quantidade; quantSpam.innerText = this.quantidade; quantEdit.remove(); quantSend.remove()});
+        //     quantSend.addEventListener('click', () => {this.quantity = Number(quantEdit.value.trim())>=0?Number(quantEdit.value.trim()):this.quantity; quantSpam.innerText = this.quantity; quantEdit.remove(); quantSend.remove()});
 
         //     prodValue.appendChild(valueEdit);
         //     prodValue.appendChild(valueSend);
@@ -90,9 +94,9 @@ export class Prod {
         deleteBtn.setAttribute('class','delete');
         deleteBtn.innerText = 'X';
         deleteBtn.addEventListener('click', ()=>{
-            estoque.splice(estoque.indexOf(this), 1);
-            prodDiv.remove();
-        })
-        prodDiv.appendChild(deleteBtn);
+            deleteFunc(this, this.prodDiv)
+        });
+        this.prodDiv.appendChild(deleteBtn);
+        updatefunc();
     }
 }

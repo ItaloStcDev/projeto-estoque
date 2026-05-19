@@ -1,25 +1,43 @@
 import { Prod } from "./prodClass.js";
 
-
-const div1 = document.querySelector("#div1");
+// const div1 = document.querySelector("#div1");
 
 const setNewProdBtn = document.querySelector('#setBtn');
 setNewProdBtn.addEventListener('click', setNewProd);
 
-export const estoque = [];
+const savedData = JSON.parse(localStorage.getItem('stock')) || [];
+
+const stock = [];
+
+export function localStorageSave() {
+    localStorage.setItem('stock', JSON.stringify(stock));
+}
 
 function setNewProd() {
-    const nome = document.querySelector('#nomeInput').value;
-    const valor = document.querySelector('#valorInput').value;
-    const quantidade = document.querySelector('#quantidadeInput').value;
+    const name = document.querySelector('#nameInput').value;
+    const value = document.querySelector('#valueInput').value;
+    const quantity = document.querySelector('#quantityInput').value;
 
-    if (!nome || !valor || !quantidade) {
+    if (!name || !value || !quantity) {
         window.alert('preencha todos os campos');
         return
     }
 
-    const novoProd = new Prod(nome, Number(valor), Number(quantidade));
+    const newProd = new Prod(name, Number(value), Number(quantity));
 
-    estoque.push(novoProd);
-    novoProd.setIt(document.body);
+    stock.push(newProd);
+    newProd.setIt(document.body, localStorageSave, deleteFromStock);
 }
+
+export const deleteFromStock = (obj, objdiv) => {
+    stock.splice(stock.indexOf(obj), 1);
+    objdiv.remove();
+    localStorageSave();
+}
+
+savedData.forEach(product => {
+    const newProd = new Prod(product.name, Number(product.value), Number(product.quantity));
+
+    stock.push(newProd);
+    newProd.setIt(document.body, localStorageSave, deleteFromStock);
+});
